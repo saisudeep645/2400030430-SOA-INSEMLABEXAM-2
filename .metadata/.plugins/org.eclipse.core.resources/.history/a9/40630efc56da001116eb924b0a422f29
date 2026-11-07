@@ -1,0 +1,54 @@
+
+package com.example.task.repository;
+
+import com.example.task.entity.Task;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@DataJpaTest
+@AutoConfigureTestDatabase(
+    replace = AutoConfigureTestDatabase.Replace.NONE
+)
+public class TaskRepositoryTest {
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Test
+    public void testSaveAndFindTask() {
+
+        // Create Task
+        Task task = new Task(
+            "Complete Assignment",
+            "Finish Spring Boot experiment",
+            false
+        );
+
+        // Save Task
+        Task savedTask = taskRepository.save(task);
+
+        // Retrieve Task using ID
+        Task foundTask = taskRepository
+                .findById(savedTask.getId())
+                .orElse(null);
+
+        // Verify Results
+        assertNotNull(savedTask.getId());
+
+        assertNotNull(foundTask);
+
+        assertEquals(
+            "Complete Assignment",
+            foundTask.getTitle()
+        );
+
+        System.out.println("Task saved successfully!");
+        System.out.println("Task ID: " + foundTask.getId());
+    }
+}
